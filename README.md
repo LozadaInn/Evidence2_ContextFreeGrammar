@@ -19,7 +19,7 @@ In this project we model a **subset** of Spanish—simple declarative sentences 
 
 The goal is to recognize sentences such as:  
 > “El hombre vio a la mujer.”  
-> “La niña encontró el telescopio en el parque.”
+> “El niño encontró el telescopio en el parque.”
 
 This subset captures essential Spanish syntax without subordinate clauses or advanced verb morphology, making it ideal for LL(1) parsing.
 
