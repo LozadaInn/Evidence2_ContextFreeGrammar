@@ -222,7 +222,7 @@ parser = ChartParser(spanish_grammar_unambiguous)
 test_sentences = [
     "El hombre vio la mujer con el telescopio",
     "La mujer encontró un niño en el parque",
-    "El niño amó el parque",
+    "El niño encontró el telescopio en el parque",
 ]
 
 for sentence in test_sentences:
@@ -244,7 +244,7 @@ python spanish_grammar_tester.py
 ```text
 El hombre vio la mujer
 El hombre vio la mujer con el telescopio
-La niña encontró el telescopio en el parque
+El niño encontró el telescopio en el parque
 ```
 
 ### Rejected strings
