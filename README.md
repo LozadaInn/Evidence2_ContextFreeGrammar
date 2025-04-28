@@ -194,4 +194,92 @@ This revised grammar serves as a solid foundation for accurate and efficient par
 
 ---
 
+## Implementation
 
+This is a simple python tester that uses NLTK and a ChartParser:
+
+```python
+import nltk
+from nltk import CFG
+from nltk.parse import ChartParser
+
+# Gramática desambiguada: PP solo se adjunta a NP
+spanish_grammar_unambiguous = CFG.fromstring(r"""
+S       -> NP VP
+NP      -> Det N NP_Cont
+NP_Cont -> PP NP_Cont
+NP_Cont -> 
+VP      -> V NP
+PP      -> P NP
+Det     -> 'el' | 'la' | 'un' | 'una'
+N       -> 'hombre' | 'mujer' | 'niño' | 'parque' | 'telescopio'
+V       -> 'vio' | 'amó' | 'encontró'
+P       -> 'con' | 'en' | 'a'
+""")
+
+parser = ChartParser(spanish_grammar_unambiguous)
+
+test_sentences = [
+    "El hombre vio la mujer con el telescopio",
+    "La mujer encontró un niño en el parque",
+    "El niño amó el parque",
+]
+
+for sentence in test_sentences:
+    tokens = sentence.lower().split()
+    trees = list(parser.parse(tokens))
+    print(f"'{sentence}' genera {len(trees)} árbol(es):")
+    for tree in trees:
+        tree.pretty_print()
+```
+### Run with
+
+```shell
+pip install nltk
+python spanish_grammar_tester.py
+```
+
+### Accepted strings
+
+```text
+El hombre vio la mujer
+El hombre vio la mujer con el telescopio
+La niña encontró el telescopio en el parque
+```
+
+### Rejected strings
+
+```text
+Hombre vio el
+La con mujer vio
+El niño amó telescopio en
+```
+### LL(1) Parsing Example
+
+For “El hombre vio la mujer con el telescopio” the parser returns 1 tree, showing that the grammar is deterministic with one lookahead.
+
+### Analysis
+
+**Before cleaning**
+
+- Chomsky level: Type 2 (Context-Free), because productions have a single nonterminal on the left and a mix of terminals/nonterminals on the right.
+
+- Ambiguity and left recursion prevented LL(1).
+
+**After cleaning**
+
+- Chomsky level: Still Type 2.
+
+- Grammar is now unambiguous and LL(1).
+
+**Time complexity**
+
+- An LL(1) parser runs in O(n) time where n is the input length.
+
+- Left-recursive or ambiguous grammars can cause backtracking or infinite loops.
+
+## References:
+- GeeksforGeeks. (2025a, January 27). Introduction of lexical analysis.GeeksforGeeks. https://www.geeksforgeeks.org/introduction-of-lexical-analysis/
+- GeeksforGeeks. (2025b, January 28). Ambiguous grammar. GeeksforGeeks. https://www.geeksforgeeks.org/ambiguous-grammar/
+- GeeksforGeeks. (2025c, April 2). Introduction to Syntax analysis in Compiler Design. GeeksforGeeks. https://www.geeksforgeeks.org/introduction-to-syntax-analysis-in-compiler-design/
+- Grammars in prolog. (n.d.). https://www3.cs.stonybrook.edu/~warren/xsbbook/node10.html
